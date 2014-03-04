@@ -28,30 +28,64 @@ $(function () {
 			return "color";
 		}
 		if(value.indexOf("px") != -1) {
-			return "number";
+			if(value.indexOf("rgb") == -1) {
+				return "number";
+			}
 		}
 		if(value.indexOf("@") != -1) {
-			return "variable";
+			if(value.indexOf("(") == -1) {
+				return "variable";
+			}
 		}
 	};
 
-	var buildTile = function (label, color) {
-		var $el = $('<article class="tile">').addClass("tile");
-		var $color = $('<header class="color">').html(color);
-		$color.attr("style", "background-color:" + color);
-		$color.appendTo($el);
+	var getVariable = function(key) {
+
+		if(valuePair[key] == null) {
+			throw new Error("This is not valid try again the " + key +" you entered is not found");
+		}
+
+		if(valuePair[key].value.indexOf("#") != -1){
+			return valuePair[key].value;
+		}
+		else if (valuePair[key].value.indexOf('px') != -1) {
+			return valuePair[key].value;
+		}
+		else if (valuePair[key].value.indexOf(',') != -1) {
+			return valuePair[key].value;
+		}
+		else {
+			return getVariable(valuePair[key].value.replace('@', ''));
+		}
+
+	}
+
+	var buildTile = function (label, value, type) {
+		var $el = $('<article class="tile">');
+		var $title = $('<header class="title">').html(value);
+		switch (type) {
+			case 'color':
+				$title.attr("style", "background-color:" + value);
+				break
+			case 'number':
+				$title.attr("style", "width: " + value);
+				break
+			case 'variable':
+				try{
+					$title.html(value +' (' + getVariable(value.replace('@', ''))  + ')');
+				} catch(e){
+					debugger;
+				}
+		}
+		$title.appendTo($el);
 		var $label = $('<footer class="text">').html(label);
 		$label.appendTo($el);
-		return $el;
+		$el.appendTo("#"+type)
 	};
 
 	var displayInfo = function(valuePair){
 		$.each(valuePair, function(key,value){
-			console.log(value.type)
-			if(value.type == "color") {
-				buildTile(value.lessVariable, value.value).appendTo("#colors");
-			}
-			if()
+			buildTile(value.lessVariable, value.value, value.type);
 		});
 	};
 
@@ -78,6 +112,7 @@ $(function () {
 			}
 		}
 		displayInfo(valuePair);
+		console.log(valuePair)
 	};
 
 	var _init = function () {
