@@ -1,0 +1,32 @@
+#less {
+  width: 100%;
+  height: 400px;
+  display: none;
+}
+#colors div {
+  padding: 5px 0;
+  border-bottom: 1px solid gray;
+}
+#colors .tile {
+  width: 200px;
+  float: left;
+  border: 2px solid silver;
+  border-radius: 5px;
+  margin: 0 10px 10px 0;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+#colors .tile .color,
+#colors .tile .text {
+  padding: 5px 10px;
+}
+#colors .tile .color {
+  border-bottom: 1px solid silver;
+  font-size: 3em;
+  text-transform: uppercase;
+  padding: 20px 5px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+#colors .tile .text {
+  font-weight: bold;
+}
