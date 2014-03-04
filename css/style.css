@@ -12,7 +12,7 @@
   overflow: hidden;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
-.tile:nth-child(5n) {
+.tile:nth-of-type(5n) {
   margin-right: 0;
 }
 .tile .title,
@@ -28,6 +28,7 @@
 }
 .tile .text {
   font-weight: bold;
+  height: 50px;
 }
 #number,
 #variable {

@@ -3,6 +3,10 @@ $(function () {
 
 	var valuePair = new Object(null);
 
+	var removeAt = function(i){
+		return i.replace("@", "");
+	};
+
 	var isComment = function (line) {
 		var check = line.indexOf("//");
 		if (check != -1) {
@@ -13,14 +17,7 @@ $(function () {
 	var getColorPair = function (item) {
 		var step1 = item.replace(";", "").replace(/ /g, "").replace(/\t/g,'');;
 		var step2 = step1.split(":");
-
-		//console.log(item);
-
-		//var check = item[1].indexOf("#");
-
-		//if (check != -1) {
-			return step2;
-		//}
+		return step2;
 	}
 
 	var getType = function(value) {
@@ -40,29 +37,32 @@ $(function () {
 	};
 
 	var getVariable = function(key) {
-
+		//Check if Object is real
 		if(valuePair[key] == null) {
 			throw new Error("This is not valid try again the " + key +" you entered is not found");
 		}
-
+		//Check if key is a HEX color
 		if(valuePair[key].value.indexOf("#") != -1){
 			return valuePair[key].value;
 		}
+		//Check if key is a pixel value
 		else if (valuePair[key].value.indexOf('px') != -1) {
 			return valuePair[key].value;
 		}
+		//Check if key is a list of fonts
 		else if (valuePair[key].value.indexOf(',') != -1) {
 			return valuePair[key].value;
 		}
+		//Check again since nothing is valid.
 		else {
-			return getVariable(valuePair[key].value.replace('@', ''));
+			return getVariable(removeAt(valuePair[key].value));
 		}
-
 	}
 
 	var buildTile = function (label, value, type) {
 		var $el = $('<article class="tile">');
 		var $title = $('<header class="title">').html(value);
+		var isVar = false;
 		switch (type) {
 			case 'color':
 				$title.attr("style", "background-color:" + value);
@@ -71,14 +71,30 @@ $(function () {
 				$title.attr("style", "width: " + value);
 				break
 			case 'variable':
-				try{
-					$title.html(value +' (' + getVariable(value.replace('@', ''))  + ')');
-				} catch(e){
-					debugger;
+				//Get Real value of variable
+				var variable = getVariable(removeAt(value));
+				$title.html('(' + variable  + ')');
+				if(variable.indexOf("#") != -1){
+					$title.attr("style", "background-color:" + variable);
+					type = "color";
+					isVar = true;
+				}
+				else if(variable.indexOf("px") != -1){
+					$title.attr("style", "width: " + variable);
+					type = "number";
+				}
+				else if(variable.indexOf(",") != -1){
+					$title.attr("style", "font-family: " + variable);
 				}
 		}
 		$title.appendTo($el);
-		var $label = $('<footer class="text">').html(label);
+
+		if(isVar) {
+			var $label = $('<footer class="text">').html(label + ' &gt; ' + value);
+		}
+		else {
+			var $label = $('<footer class="text">').html(label);
+		}
 		$label.appendTo($el);
 		$el.appendTo("#"+type)
 	};
@@ -94,25 +110,20 @@ $(function () {
 			var item = list[i];
 			if (!isComment(item)) {
 				var pair = getColorPair(item);
-				//if (pair) {
 
-					var newRow = new Object(null);
-					var label = pair[0];
-					var value = pair[1];
+				var childOjb = new Object(null);
+				var label = pair[0];
+				var value = pair[1];
 
-					newRow.lessVariable = label;
-					newRow.value = value;
-					newRow.type = getType(value);
+				childOjb.lessVariable = label;
+				childOjb.value = value;
+				childOjb.type = getType(value);
 
-					valuePair[label.replace("@", "")] = newRow;
+				valuePair[removeAt(label)] = newRow;
 
-					//buildTile(label, color).appendTo('#output');
-
-				//}
 			}
 		}
 		displayInfo(valuePair);
-		console.log(valuePair)
 	};
 
 	var _init = function () {
