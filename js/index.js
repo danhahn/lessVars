@@ -119,11 +119,28 @@ $(function () {
 				childOjb.value = value;
 				childOjb.type = getType(value);
 
-				valuePair[removeAt(label)] = newRow;
+				valuePair[removeAt(label)] = childOjb;
 
 			}
 		}
 		displayInfo(valuePair);
+	};
+
+	$("#showCode").on("click", function() {
+		var $el = $(this);
+		console.log($el);
+		$("<div class='overlay'></div>").appendTo("body");
+		$("#dataInput").show();
+	});
+
+	$("#doUpdate").on("click", function() {
+		_reset();
+		_init();
+		$("#dataInput, .overlay").fadeOut();
+	});
+
+	var _reset = function() {
+		$("#color .tile, #number .tile, #variable .tile").remove();
 	};
 
 	var _init = function () {

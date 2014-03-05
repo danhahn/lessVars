@@ -1,8 +1,36 @@
-#less {
-	width: 100%;
-	height: 400px;
-	display: none;
+.overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0,0,0,.5);
+	z-index: 1000;
 }
+
+#dataInput {
+	display: none;
+	position: fixed;
+	padding: 20px;
+	border: 10px solid rgba(0,0,0,.5);
+	border-radius: 10px;
+
+	top: 50%;
+	left: 50%;
+	width: 800px;
+	margin-left: -800px/2;
+	height: 600px;
+	margin-top: -600px/2;
+	z-index: 1000+500;
+	background-color: #ffffff;
+
+	#less {
+		width: 100%;
+		height: 400px;
+
+	}
+}
+
 
 .tile {
 	width: 220px;
